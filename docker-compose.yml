@@ -1,0 +1,8 @@
+version: '2'
+services:
+   mydb:
+      image: couchdb:latest
+      ports:
+      - "5984:5984"
+      volumes:
+      - ./data:/usr/local/var/lib
