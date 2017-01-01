@@ -154,3 +154,21 @@ Boom.
 
     $ hoodie deploy
      - jitsu deploy-->
+
+
+# Simple module
+```
+{
+   category:"",
+   month:0,
+   year:0
+   budget:0,
+   remaining:0.0,
+   txns:[{
+      date:"",
+      payee:"",
+      amount:0.0,
+      note:""
+      }]
+}
+```

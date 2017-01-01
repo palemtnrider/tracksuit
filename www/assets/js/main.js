@@ -73,8 +73,41 @@ function Todos($element) {
   };
 }
 
+// Budget Collection/View
+function Budgets($element) {
+  var collection = [];
+  var $el = $element;
+
+  this.add = function(budget) {
+     console.log("adding budget");
+    collection.push(budget);
+    paint();
+  };
+
+  function paint() {
+    $el.html('');
+    /*
+    collection.sort(function(a, b) {
+      return ( a.createdAt > b.createdAt ) ? 1 : -1;
+    });
+    */
+    for (var i = 0, len = collection.length; i<len; i++) {
+      $el.append(
+        '<li data-id="' + collection[i].id + '">' +
+          '<input type="checkbox"> <label>' + collection[i].category + ':' + collection[i].amount + '</label>' +
+          '<input type="text" value="' + collection[i].category + '"/>' +
+        '</li>'
+      );
+    }
+  }
+}
+
+
 // Instantiate Todos collection & view.
 var todos = new Todos($('#todolist'));
+
+// Instantiate Todos collection & view.
+var budgets = new Budgets($('#budgetlist'));
 
 // initial load of all todo items from the store
 hoodie.store.findAll('todo').then(function(allTodos) {
@@ -94,4 +127,25 @@ $('#add-todo').on('click', function() {
   // ENTER & non-empty.
    hoodie.store.add('todo', {title: $("#todoinput").val(), priority: $("#priorityinput").val()});
    $("#todoinput").val('');
+});
+
+// handle creating a new budget category
+hoodie.store.on('budget:add', budgets.add);
+
+function clear_budget_form() {
+   $("#budget-amt").val('');
+   $("#budget-cat").val('');
+   $("#budget-month").val('');
+   $("#budget-year").val('');
+
+}
+$('#add-category').on('click', function() {
+  // ENTER & non-empty.
+   hoodie.store.add('budget', {
+      category: $("#budget-cat").val(),
+      month: $("#budget-month").val(),
+      year: $("#budget-month").val(),
+      amount: $("#budget-amt").val(),
+   });
+   clear_budget_form();
 });

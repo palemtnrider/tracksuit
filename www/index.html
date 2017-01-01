@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="assets/vendor/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="assets/vendor/prism/prism.css">
     <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/font-awesome-4.7.0/css/font-awesome.min.css">
   </head>
   <body>
     <div class="container">
@@ -28,7 +29,7 @@
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu pull-right">
-                <li><a href="#" data-hoodie-action="signin">Sign In</a></li>
+                <li><a href="#" data-hoodie-action="signin"><i class="fa fa-user-circle-o"></i> Sign In</a></li>
                 <li><a href="#" data-hoodie-action="resetpassword">Reset Password</a></li>
                 <li><a href="#" data-hoodie-action="destroy">Clear local data</a></li>
               </ul>
@@ -79,42 +80,42 @@
         </select>
         <button id="add-todo">Add New Todo</button>
       </div>
-
-      <aside role="complementary" class="code">
-<pre class="language-javascript"><code class="language-javascript">
-// initialize Hoodie
-var hoodie  = new Hoodie()
-
-// initial load of all todo items from the store
-hoodie.store.findAll('todo').then( function(todos) {
-  todos.sort( sortByCreatedAt ).forEach( addTodo )
-})
-
-// when a new todo gets stored, add it to the UI
-hoodie.store.on('add:todo', addTodo)
-// when a user signs out, clear the todo list
-hoodie.account.on('signout', clearTodos)
-
-// handle creating a new task
-$('#todoinput').on('keypress', function(event) {
-  if (event.keyCode == 13) { // ENTER
-    hoodie.store.add('todo', {title: event.target.value});
-    event.target.value = '';
-  }
-})
-
-function addTodo( todo ) {
-  $('#todolist').append('&lt;li&gt;'+todo.title+'&lt;/li&gt;');
-}
-function clearTodos() {
-  $('#todolist').html('');
-}
-function sortByCreatedAt(a, b) {
-  return a.createdAt &gt; b.createdAt
-}
-</code></pre>
-      </aside><!-- /.code -->
-
+      <!-- Button trigger modal -->
+      <div role="main" class="content">
+        <ul id="budgetlist"></ul>
+        <hr/>
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+            Add Budget Category
+        </button>
+      </div>
+      <!-- Modal -->
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">New Budget Category</h4>
+            </div>
+            <div class="modal-body">
+              <input type="text" id="budget-cat" placeholder="Category"/>
+              <select id="budget-month" class="form-control">
+                 <option>Jan</option>
+                 <option>Feb</option>
+                 <option>Mar</option>
+              </select>
+              <select id="budget-year" class="form-control">
+                 <option>2016</option>
+                 <option>2017</option>
+              </select>
+              <input type="text" id="budget-amt" placeholder="Amount"/>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="add-category">Add Budget Item</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <footer role="contentinfo" class="copy">
         <p>&hearts; hood.ie 2015</p>
       </footer>
