@@ -47,7 +47,7 @@ function Todos($element) {
         '<li data-id="' + collection[i].id + '">' +
           '<input type="checkbox"> <label>' + collection[i].priority + ':' + collection[i].title + '</label>' +
           '<input type="text" value="' + collection[i].title + '"/>' +
-        '</li>'
+         '</li>'
       );
     }
   }
@@ -92,11 +92,18 @@ function Budgets($element) {
     });
     */
     for (var i = 0, len = collection.length; i<len; i++) {
+      var remainingPct = (collection[i].amount - collection[i].remaining)/collection[i].amount;
       $el.append(
         '<li data-id="' + collection[i].id + '">' +
           '<input type="checkbox"> <label>' + collection[i].category + ':' + collection[i].amount + '</label>' +
           '<input type="text" value="' + collection[i].category + '"/>' +
-        '</li>'
+          + '<br/><div class="progress">'
+          + '  <div class="progress-bar" role="progressbar" aria-valuenow="' + remainingPct + '" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;">'
+          + remainingPct + '%'
+          + '  </div>'
+          + '</div>'
+
+        + '</li>'
       );
     }
   }
@@ -146,6 +153,7 @@ $('#add-category').on('click', function() {
       month: $("#budget-month").val(),
       year: $("#budget-month").val(),
       amount: $("#budget-amt").val(),
+      remaining: $("#budget-amt").val(),
    });
    clear_budget_form();
 });
