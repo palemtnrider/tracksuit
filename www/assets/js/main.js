@@ -101,7 +101,7 @@ function Budgets($element) {
   };
 
   this.update = function(budget) {
-    collection[getTodoItemIndexById(budget.id)] = budget;
+    collection[getBudgetItemIndexById(budget.id)] = budget;
     paint();
   };
 
@@ -111,20 +111,17 @@ function Budgets($element) {
   };
   function paint() {
     $el.html('');
-    /*
     collection.sort(function(a, b) {
-      return ( a.createdAt > b.createdAt ) ? 1 : -1;
+      return a.category.localeCompare(b.category );
     });
-    */
     for (var i = 0, len = collection.length; i<len; i++) {
-      var remainingPct = (collection[i].amount - collection[i].remaining)/collection[i].amount;
+      var consumedPct = (collection[i].amount - collection[i].remaining)/collection[i].amount * 100;
       $el.append(
         '<li data-id="' + collection[i].id + '">' +
-          '<input type="checkbox"> <label>' + collection[i].category + ':' + collection[i].amount + '</label>' +
-          '<input type="text" value="' + collection[i].category + '"/>' +
-          + '<br/><div class="progress">'
-          + '  <div class="progress-bar" role="progressbar" aria-valuenow="' + remainingPct + '" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;">'
-          + remainingPct + '%'
+          '<label>' + collection[i].category + '</label>'
+          + '<div class="progress">'
+          + '  <div class="progress-bar" role="progressbar" aria-valuenow="' + consumedPct + '" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: ' + consumedPct + '%;">'
+          + consumedPct + '% of ' + collection[i].amount
           + '  </div>'
           + '</div>'
           + '<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#txnModal" id="' + collection[i].id + '">'
@@ -175,12 +172,14 @@ $('#add-todo').on('click', function() {
 
 // handle creating a new budget category
 hoodie.store.on('budget:add', budgets.add);
+hoodie.store.on('budget:update', budgets.update);
 
 function clear_budget_form() {
    $("#budget-amt").val('');
    $("#budget-cat").val('');
    $("#budget-month").val('');
    $("#budget-year").val('');
+   $("#myModal").modal('toggle');
 
 }
 function clear_txn_form() {
@@ -189,6 +188,7 @@ function clear_txn_form() {
    $("#txn-payee").val('');
    $("#txn-amt").val('');
    $("#txn-note").val('');
+   $("#txnModal").modal('toggle');
 
 }
 
