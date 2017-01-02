@@ -77,13 +77,38 @@ function Todos($element) {
 function Budgets($element) {
   var collection = [];
   var $el = $element;
+  // Find index/position of a todo in collection.
+  function getBudgetItemIndexById(id) {
+    for (var i = 0, len = collection.length; i < len; i++) {
+      if (collection[i].id === id) {
+        return i;
+      }
+    }
+    return null;
+  }
 
+  this.findBudgetById = function(id) {
+     var idx = getBudgetItemIndexById(id);
+     if (idx != null) {
+        return collection[idx];
+     }
+     return null;
+  }
   this.add = function(budget) {
      console.log("adding budget");
     collection.push(budget);
     paint();
   };
 
+  this.update = function(budget) {
+    collection[getTodoItemIndexById(budget.id)] = budget;
+    paint();
+  };
+
+  this.clear = function() {
+    collection = [];
+    paint();
+  };
   function paint() {
     $el.html('');
     /*
@@ -102,7 +127,9 @@ function Budgets($element) {
           + remainingPct + '%'
           + '  </div>'
           + '</div>'
-
+          + '<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#txnModal" id="' + collection[i].id + '">'
+          + '  Add Transaction'
+          + '</button>'
         + '</li>'
       );
     }
@@ -121,6 +148,11 @@ hoodie.store.findAll('todo').then(function(allTodos) {
   allTodos.forEach(todos.add);
 });
 
+// initial load of all todo items from the store
+hoodie.store.findAll('budget').then(function(allBudgets) {
+  allBudgets.forEach(budgets.add);
+});
+
 // when a todo changes, update the UI.
 hoodie.store.on('todo:add', todos.add);
 hoodie.store.on('todo:update', todos.update);
@@ -128,7 +160,12 @@ hoodie.store.on('todo:remove', todos.remove);
 // clear todos when user logs out,
 hoodie.account.on('signout', todos.clear);
 
+hoodie.account.on('signout', budgets.clear);
 
+
+$('#txnModal').on('show.bs.modal', function(e) {
+   $("#txn-budget-id").val(e.relatedTarget.id);
+})
 // handle creating a new task
 $('#add-todo').on('click', function() {
   // ENTER & non-empty.
@@ -146,6 +183,15 @@ function clear_budget_form() {
    $("#budget-year").val('');
 
 }
+function clear_txn_form() {
+   $("#txn-budget-id").val('');
+   $("#txn-date").val('');
+   $("#txn-payee").val('');
+   $("#txn-amt").val('');
+   $("#txn-note").val('');
+
+}
+
 $('#add-category').on('click', function() {
   // ENTER & non-empty.
    hoodie.store.add('budget', {
@@ -154,6 +200,27 @@ $('#add-category').on('click', function() {
       year: $("#budget-month").val(),
       amount: $("#budget-amt").val(),
       remaining: $("#budget-amt").val(),
+      txns: []
    });
    clear_budget_form();
+});
+$('#add-txn').on('click', function() {
+  // ENTER & non-empty.
+  var budget = budgets.findBudgetById($("#txn-budget-id").val());
+  var newTxn = {
+     date: $("#txn-date").val(),
+     payee: $("#txn-date").val(),
+     amt: $("#txn-amt").val(),
+     note: $("#txn-note").val(),
+  };
+
+  if (budget.txns) {
+     budget.txns.push(newTxn);
+  } else {
+     budget.txns = [newTxn];
+  }
+  hoodie.store.update('budget',
+     budget.id, {txns: budget.txns, remaining:budget.remaining - $("#txn-amt").val()});
+
+   clear_txn_form();
 });

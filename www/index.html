@@ -88,7 +88,7 @@
             Add Budget Category
         </button>
       </div>
-      <!-- Modal -->
+      <!-- Modal budget-->
       <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -116,6 +116,30 @@
           </div>
         </div>
       </div>
+      <!-- Modal transaction-->
+      <div class="modal fade" id="txnModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">New Transaction</h4>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="txn-budget-id"/>
+              <input type="date" id="txn-date" placeholder="Date"/>
+              <input type="text" id="txn-payee" placeholder="Payee"/>
+              <input type="text" id="txn-amt" placeholder="Amount"/>
+              <input type="text" id="txn-note" placeholder="Note"/>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="add-txn">Add Transaction</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
       <footer role="contentinfo" class="copy">
         <p>&hearts; hood.ie 2015</p>
       </footer>
